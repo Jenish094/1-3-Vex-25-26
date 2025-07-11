@@ -18,13 +18,24 @@ competition Competition;
 /*---------------------------------------------------------------------------*/
 /*                          Defining Robot Devices                           */
 /*---------------------------------------------------------------------------*/
+
+brain Brain;
+controller Controller1;
+
 // Here just change the port number to match the actual robot
-motor FrontLmotor(PORT1, ratio6_1, false); //front left motor
-motor BackLmotor(PORT2, ratio6_1, false); // back left motor
+// Drivetrain
+motor FrontLmotor(PORT2, ratio6_1, false); //front left motor
+motor BackLmotor(PORT1, ratio6_1, false); // back left motor
 motor FrontRmotor(PORT3, ratio6_1, true); // reversed- front right motor
 motor BackRmotor(PORT4, ratio6_1, true);  // reversed- back right motor
 // 6:1 ratio was used to accellerate speed as our preseason theories lead to a fast-paced game
-controller Controller1;
+
+// Other devices
+motor IntakeMotor(PORT5, ratio6_1, true); // intake motor
+motor IntakeMotor2(PORT6, ratio6_1, false); // second intake motor
+motor_group IntakeWheels(IntakeMotor, IntakeMotor2 ); // intake wheels motor group
+
+motor Chain(PORT7, ratio6_1, false); //Chain
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -51,6 +62,14 @@ void autonomous(void) {
 //Put all code inside the loop
 // This code is for just mapping the controller buttons to the robot functionalities
 void usercontrol(void) {
+  //Stop all motors
+  FrontLmotor.stop();
+  FrontRmotor.stop();
+  BackLmotor.stop();
+  BackRmotor.stop();
+  IntakeWheels.stop();
+  Chain.stop();
+
   while (1) {
     int leftSpeed = Controller1.Axis3.position(percent);  // Left stick Y-axis
     int rightSpeed = Controller1.Axis2.position(percent); // Right stick Y-axis
@@ -61,7 +80,29 @@ void usercontrol(void) {
     FrontRmotor.spin(forward, rightSpeed, percent);
     BackRmotor.spin(forward, rightSpeed, percent);
 
-    wait(20, msec); // Sleep to prevent wasted resources
+    //IntakeWheel
+    if (Controller1.ButtonR1.pressing()) {
+      IntakeWheels.spin(forward, 100, percent);
+    }
+      else if (Controller1.ButtonR2.pressing()) {
+        IntakeWheels.spin(reverse, 100, percent);
+      }
+      else {
+        IntakeWheels.stop();
+      }
+      
+      //Chain
+    if (Controller1.ButtonL1.pressing()) {
+      Chain.spin(forward, 100, percent);
+    }
+      else if (Controller1.ButtonL2.pressing()) {
+        Chain.spin(reverse, 100, percent);
+      }
+      else {
+        Chain.stop();
+      }
+
+    wait(20, msec);
   }
 }
 
