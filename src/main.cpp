@@ -14,6 +14,7 @@
 
 using namespace vex;
 competition Competition;
+controller Controller;
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -49,21 +50,21 @@ void usercontrol(void) {
   Chain.stop();
 
   while (1) {
-    int leftSpeed = Controller1.Axis3.position(percent);  // Left stick Y-axis
-    int rightSpeed = Controller1.Axis2.position(percent); // Right stick Y-axis
+    int drive = Controller.Axis3.position(percent);  // Left stick Y-axis
+    int turn = Controller.Axis2.position(percent); // Right stick Y-axis
 
-    int leftSpeed = forward + turn;
-    int rightSpeed = forward - turn;
+    int leftSpeed = drive + turn;
+    int rightSpeed = drive - turn;
 
     FrontLmotor.spin(forward, leftSpeed, percent);
     BackLmotor.spin(forward, leftSpeed, percent);
     FrontRmotor.spin(forward, rightSpeed, percent);
     BackRmotor.spin(forward, rightSpeed, percent);
 
-    handleIntakeControls();
-    handleChainControls;
+  handleIntakeControls();
+  handleChainControls();
 
-    wait(10, msec);
+  wait(10, msec);
 }
 
 //
