@@ -6,14 +6,11 @@
 /*    Description:  V5 project                                                */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-// Were cooked
-// This is a Pre-Season starter template, this controls the 4-motor drivetrain
+// We're cooked
 #include "vex.h"
 #include "devices.h"
 
 using namespace vex;
-
-// A global instance of competition
 competition Competition;
 
 /*---------------------------------------------------------------------------*/
