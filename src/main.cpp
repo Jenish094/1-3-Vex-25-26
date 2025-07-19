@@ -9,6 +9,8 @@
 // We're cooked
 #include "vex.h"
 #include "devices.h"
+#include "controls.h"
+#include "drive.h"
 
 using namespace vex;
 competition Competition;
@@ -27,9 +29,8 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+
+  
 }
 
 /*---------------------------------------------------------------------------*/
@@ -50,36 +51,18 @@ void usercontrol(void) {
     int leftSpeed = Controller1.Axis3.position(percent);  // Left stick Y-axis
     int rightSpeed = Controller1.Axis2.position(percent); // Right stick Y-axis
 
+    int leftSpeed = forward + turn;
+    int rightSpeed = forward - turn;
+
     FrontLmotor.spin(forward, leftSpeed, percent);
     BackLmotor.spin(forward, leftSpeed, percent);
-
     FrontRmotor.spin(forward, rightSpeed, percent);
     BackRmotor.spin(forward, rightSpeed, percent);
 
-    //IntakeWheel
-    if (Controller1.ButtonR1.pressing()) {
-      IntakeWheels.spin(forward, 100, percent);
-    }
-      else if (Controller1.ButtonR2.pressing()) {
-        IntakeWheels.spin(reverse, 100, percent);
-      }
-      else {
-        IntakeWheels.stop();
-      }
-      
-      //Chain
-    if (Controller1.ButtonL1.pressing()) {
-      Chain.spin(forward, 100, percent);
-    }
-      else if (Controller1.ButtonL2.pressing()) {
-        Chain.spin(reverse, 100, percent);
-      }
-      else {
-        Chain.stop();
-      }
+    handleIntakeControls();
+    handleChainControls;
 
-    wait(20, msec);
-  }
+    wait(10, msec);
 }
 
 //
