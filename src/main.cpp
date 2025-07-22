@@ -21,8 +21,12 @@ controller Controller;
 /*---------------------------------------------------------------------------*/
 
 void pre_auton(void) {
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
+  FrontLmotor.stop();
+  FrontRmotor.stop();
+  BackLmotor.stop();
+  BackRmotor.stop();
+  IntakeWheels.stop();
+  Chain.stop();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -30,9 +34,11 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  drive(24,100);
-  turn(12,100);
-  drive(-24,100);
+  drive(11,100);
+  turn(90,100);
+  drive(43,100);
+
+// insane autonomous
 }
 
 /*---------------------------------------------------------------------------*/
@@ -65,6 +71,7 @@ void usercontrol(void) {
   handleChainControls();
 
   wait(10, msec);
+  }
 }
 
 //

@@ -4,10 +4,12 @@
 
 using namespace vex;
 
+controller Controller;
+
 void handleIntakeControls() {
-  if (Controller1.ButtonR1.pressing()) {
+  if (Controller.ButtonR1.pressing()) {
     IntakeWheels.spin(forward, 100, percent);
-  } else if (Controller1.ButtonR2.pressing()) {
+  } else if (Controller.ButtonR2.pressing()) {
     IntakeWheels.spin(reverse, 100, percent);
   } else {
     IntakeWheels.stop();
@@ -15,9 +17,9 @@ void handleIntakeControls() {
 }
 
 void handleChainControls() {
-  if (Controller1.ButtonL1.pressing()) {
+  if (Controller.ButtonL1.pressing()) {
     Chain.spin(forward, 100, percent);
-  } else if (Controller1.ButtonL2.pressing()) {
+  } else if (Controller.ButtonL2.pressing()) {
     Chain.spin(reverse, 100, percent);
   } else {
     Chain.stop();
