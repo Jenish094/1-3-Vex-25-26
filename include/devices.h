@@ -1,16 +1,21 @@
-#pragma once
+#ifndef DEVICES_H
+#define DEVICES_H
+
 #include "vex.h"
 
-// Drive motors
+extern vex::brain Brain;
+extern vex::controller Controller1;
+
+// Drivetrain motors
 extern vex::motor FrontLmotor;
 extern vex::motor BackLmotor;
 extern vex::motor FrontRmotor;
 extern vex::motor BackRmotor;
 
-// Intake
+// Other devices
 extern vex::motor IntakeMotor;
 extern vex::motor IntakeMotor2;
 extern vex::motor_group IntakeWheels;
-
-// Other
 extern vex::motor Chain;
+
+#endif // DEVICES_H

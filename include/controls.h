@@ -1,4 +1,8 @@
-#pragma once
+#ifndef CONTROLS_H
+#define CONTROLS_H
 
-void handleIntakeControls();
-void handleChainControls();
+#include "vex.h"
+
+void usercontrol(void);
+
+#endif // CONTROLS_H

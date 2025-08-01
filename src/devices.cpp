@@ -1,15 +1,19 @@
 #include "devices.h"
 
-// Drive motors
-vex::motor FrontLmotor(vex::PORT2, vex::gearSetting::ratio6_1, false);
-vex::motor BackLmotor(vex::PORT1, vex::gearSetting::ratio6_1, false);
-vex::motor FrontRmotor(vex::PORT3, vex::gearSetting::ratio6_1, true);
-vex::motor BackRmotor(vex::PORT4, vex::gearSetting::ratio6_1, true);
+using namespace vex;
 
-// Intake motors
-vex::motor IntakeMotor(vex::PORT5, vex::gearSetting::ratio6_1, true);
-vex::motor IntakeMotor2(vex::PORT6, vex::gearSetting::ratio6_1, false);
-vex::motor_group IntakeWheels(IntakeMotor, IntakeMotor2);
+// Global device instances
+brain Brain;
+controller Controller1;
 
-// Chain
-vex::motor Chain(vex::PORT7, vex::gearSetting::ratio6_1, false);
+// Drivetrain motors
+motor FrontLmotor(PORT2, ratio6_1, false); //front left motor
+motor BackLmotor(PORT1, ratio6_1, false); // back left motor
+motor FrontRmotor(PORT3, ratio6_1, true); // reversed- front right motor
+motor BackRmotor(PORT4, ratio6_1, true);  // reversed- back right motor
+
+// Other devices
+motor IntakeMotor(PORT5, ratio6_1, true); // intake motor
+motor IntakeMotor2(PORT6, ratio6_1, false); // second intake motor
+motor_group IntakeWheels(IntakeMotor, IntakeMotor2); // intake wheels motor group
+motor Chain(PORT7, ratio6_1, false); //Chain
