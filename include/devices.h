@@ -7,15 +7,19 @@ extern vex::brain Brain;
 extern vex::controller Controller1;
 
 // Drivetrain motors
-extern vex::motor FrontLmotor;
-extern vex::motor BackLmotor;
-extern vex::motor FrontRmotor;
-extern vex::motor BackRmotor;
+extern vex::motor LeftFront;
+extern vex::motor BackLeft;
+extern vex::motor_group leftMotors;
+extern vex::motor RightFront;
+extern vex::motor BackRight;
+extern vex::motor_group rightMotors;
 
 // Other devices
-extern vex::motor IntakeMotor;
-extern vex::motor IntakeMotor2;
-extern vex::motor_group IntakeWheels;
 extern vex::motor Chain;
+extern vex::motor IntakeTop;
+extern vex::motor IntakeBottom;
+
+extern vex::drivetrain Drivetrain;
+extern vex::competition Competition;
 
 #endif // DEVICES_H

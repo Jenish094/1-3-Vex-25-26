@@ -7,13 +7,18 @@ brain Brain;
 controller Controller1;
 
 // Drivetrain motors
-motor FrontLmotor(PORT2, ratio6_1, false); //front left motor
-motor BackLmotor(PORT1, ratio6_1, false); // back left motor
-motor FrontRmotor(PORT3, ratio6_1, true); // reversed- front right motor
-motor BackRmotor(PORT4, ratio6_1, true);  // reversed- back right motor
+motor LeftFront(PORT1, ratio6_1, false);
+motor BackLeft(PORT2, ratio6_1, false);
+motor_group leftMotors = motor_group(LeftFront, BackLeft);
+motor RightFront(PORT3, ratio6_1, true);
+motor BackRight(PORT4, ratio6_1, true);
+motor_group rightMotors = motor_group(RightFront, BackRight);
 
 // Other devices
-motor IntakeMotor(PORT5, ratio6_1, true); // intake motor
-motor IntakeMotor2(PORT6, ratio6_1, false); // second intake motor
-motor_group IntakeWheels(IntakeMotor, IntakeMotor2); // intake wheels motor group
-motor Chain(PORT7, ratio6_1, false); //Chain
+motor Chain(PORT5, ratio6_1, false);
+motor IntakeTop(PORT6, ratio6_1, false);
+motor IntakeBottom(PORT7, ratio6_1, true); // reversed
+motor_group IntakeWheels = motor_group(IntakeTop, IntakeBottom);
+
+drivetrain Drivetrain = drivetrain(leftMotors, rightMotors, 259.34, 320, 40, mm, 1);
+competition Competition;
