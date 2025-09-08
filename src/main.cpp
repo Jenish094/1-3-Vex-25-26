@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros-grafana-lib/api.h"
 
 #define LeftFront 10
 #define LeftBack 9
@@ -17,6 +18,7 @@ lv_obj_t* image;
  * When this callback is fired, it will toggle line 2 of the LCD text between
  * "I was pressed!" and nothing.
  */
+
 
 int autonSelection = 0;
 	// 0 none
@@ -180,15 +182,31 @@ void autonBR(){
 
 }
 void opcontrol() {
+  
 	LV_IMG_DECLARE(Image);
 	image = lv_img_create(lv_scr_act());
 	lv_img_set_src(image, &Image);
 	lv_obj_set_size(image, 480, 272);
 	lv_obj_align(image, LV_ALIGN_CENTER, 0, 0);
+
+  // PROS Grafana
+  auto manager = std::make_shared<grafanalib::GUIManager>();
+  manager.setRefreshRate(20);
+  grafanalib::Variable<pros::Motor> leftFrontMotorVar("Left Front Motor", LeftFront);
+  grafanalib::Variable<pros::Motor> leftBackMotorVar("Left Back Motor", LeftBack);
+  grafanalib::Variable<pros::Motor> rightFrontMotorVar("Right Front Motor", RightFront);
+  grafanalib::Variable<pros::Motor> rightBackMotorVar("Right Back Motor", RightBack);
+  chassisVars.add_getter("Temperature", &pros::Motor::get_temperature);
+	chassisVars.add_getter("Actual Velocity", &pros::Motor::get_actual_velocity);
+	chassisVars.add_getter("Voltage", &pros::Motor::get_voltage);
+	chassisVars.add_getter("Efficiency", &pros::Motor::get_efficiency);
+	manager.registerDataHandler(&chassisVars);
+	manager.startTask();
+  // End Pros Grafana Run
 	Controller master(E_CONTROLLER_MASTER);
 	lcd::set_text(1, "Running Driver");
 
-  	MotorGroup left_mg ({LeftFront, LeftBack});	
+  MotorGroup left_mg ({LeftFront, LeftBack});	
 	MotorGroup right_mg ({RightFront, RightBack});
 	// Intake orientation mapping per requirements (on forward command):
 	// Green reverse, Blue forward, Orange forward, Yellow reverse, Purple forward
