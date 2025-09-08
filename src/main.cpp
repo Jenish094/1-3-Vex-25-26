@@ -1,20 +1,16 @@
 #include "main.h"
 
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
-}
+#define LeftFront 10
+#define LeftBack 9
+#define RightFront 20
+#define RightBack 11
+#define Green 8
+#define Blue 5
+#define Orange 15
+#define Yellow 6
+#define Purple 7
+
+// 480x247 is screen res
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -22,11 +18,9 @@ void on_center_button() {
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
 
-	pros::lcd::register_btn1_cb(on_center_button);
+void initialize() {
+
 }
 
 /**
@@ -46,7 +40,10 @@ void disabled() {}
  * starts.
  */
 void competition_initialize() {}
-
+// void autontest() {
+// 	MotorGroup Intake({-Green, Blue, Orange, -Yellow, Purple});
+// 	Intake.move(kIntakePower);
+// }
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -58,7 +55,10 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+
+void autonomous() {
+
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -73,22 +73,39 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::MotorGroup left_mg({1, -2, 3});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-	pros::MotorGroup right_mg({-4, 5, -6});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
+	Controller master(E_CONTROLLER_MASTER);
+	lcd::set_text(1, "Running Driver");
+
+  MotorGroup left_mg ({LeftFront, LeftBack});	
+	MotorGroup right_mg ({RightFront, RightBack});
+	// Intake orientation mapping per requirements (on forward command):
+	// Green reverse, Blue forward, Orange forward, Yellow reverse, Purple forward
+	// Use negative port numbers to reverse those motors in the group.
+	MotorGroup Intake({-Green, Blue, Orange, -Yellow, Purple});
 
 
 	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
+		lcd::print(0, "%d %d %d", (lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
+		                 (lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+		                 (lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
+
 
 		// Arcade control scheme
 		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
 		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
 		left_mg.move(dir - turn);                      // Sets left motor voltage
 		right_mg.move(dir + turn);                     // Sets right motor voltage
-		pros::delay(20);                               // Run for 20 ms then update
+
+		// Intake control: R1 forward, R2 reverse (others stop)
+		if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+			Intake.move(127);
+		} else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+			Intake.move(-127);
+		} else {
+			Intake.move(0);
+		}
+		delay(20);                               // Run for 20 ms then update
 	}
 }

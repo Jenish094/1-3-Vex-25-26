@@ -35,6 +35,8 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
+#include "pros/apix.h"
+#include "liblvgl/lvgl.h"
 
 /**
  * You should add more #includes here
@@ -49,8 +51,8 @@
  * concurrently! The okapi namespace will export all symbols inside the pros
  * namespace.
  */
-// using namespace pros;
-// using namespace pros::literals;
+using namespace pros;
+using namespace pros::literals;
 // using namespace okapi;
 
 /**
@@ -66,6 +68,14 @@ void initialize(void);
 void disabled(void);
 void competition_initialize(void);
 void opcontrol(void);
+void autLRed();
+void autRRed();
+void autLBlue();
+void autRBlue();
+
+extern lv_obj_t *btnLRed, *btnRRed, *btnLBlue, *btnRBlue;
+extern int autonSelection;
+
 #ifdef __cplusplus
 }
 #endif
