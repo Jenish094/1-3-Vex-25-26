@@ -73,9 +73,6 @@ void autRRed();
 void autLBlue();
 void autRBlue();
 
-extern lv_obj_t *btnLRed, *btnRRed, *btnLBlue, *btnRBlue;
-extern int autonSelection;
-
 #ifdef __cplusplus
 }
 #endif
