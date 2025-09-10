@@ -1,4 +1,6 @@
 #include "main.h"
+#include "liblvgl/display/lv_display.h"
+#include "liblvgl/widgets/image/lv_image.h"
 
 #define LeftFront 10
 #define LeftBack 9
@@ -18,6 +20,14 @@
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
+
+
+void displayimg() {
+ LV_IMAGE_DECLARE(image);
+ lv_obj_t* img = lv_image_create(lv_screen_active());
+ lv_image_set_src(img, &image);
+ lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
+}
 
 void initialize() {
 
@@ -57,7 +67,8 @@ void competition_initialize() {}
  */
 
 void autonomous() {
-
+  
+displayimg();
 }
 
 /**
