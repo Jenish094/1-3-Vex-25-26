@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "2526Skills",
+    "project_name": "MainCode",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -592,9 +592,9 @@
       }
     },
     "upload_options": {
-      "icon": "planet",
+      "icon": "pizza",
       "slot": 1,
-      "description": "Skills Code for Autonomous and Driver. PROS"
+      "description": "Main Code for 2025/2026 1/3"
     },
     "use_early_access": false
   }

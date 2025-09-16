@@ -25,12 +25,13 @@ void displayimg() {
 int press_x, press_y;
 
 void initialize() {
+
  pros::screen::set_pen(0xff0000);
  pros::screen::fill_rect(0, 0, 238, 120);
- pros::screen::fill_rect(0, 124, 238, 134);
+ pros::screen::fill_rect(0, 124, 238, 240);
  pros::screen::set_pen(0x0000ff);
  pros::screen::fill_rect(242, 0, 480, 120);
- pros::screen::fill_rect(242, 124, 480, 272);
+ pros::screen::fill_rect(242, 124, 480, 240);
  while (1) {
    if (pros::screen::touch_status().touch_status == E_TOUCH_PRESSED) {
        press_x = pros::screen::touch_status().x;
@@ -38,7 +39,6 @@ void initialize() {
        break;
    }
  }
-
 }
 
 /**
@@ -74,16 +74,28 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonRL() {
-
+    while(1){
+       pros::screen::print(pros::E_TEXT_MEDIUM, 3, "RL");
+       pros::delay(1000);
+    }
 }
 void autonRR(){
-
+    while(1){
+       pros::screen::print(pros::E_TEXT_MEDIUM, 3, "RR");
+       pros::delay(1000);
+    }
 }
 void autonBL(){
-// exact same as RR
+    while(1){
+       pros::screen::print(pros::E_TEXT_MEDIUM, 3, "BL");
+       pros::delay(1000);
+    }
 }
 void autonBR(){
-// exact same as RL
+    while(1){
+       pros::screen::print(pros::E_TEXT_MEDIUM, 3, "BR");
+       pros::delay(1000);
+    }
 }
 void autonomous() {
   if ((press_x < 238) && (press_y < 120)) { 
