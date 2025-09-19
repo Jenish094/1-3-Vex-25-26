@@ -1,9 +1,4 @@
-bin/image.c.o: src/image.c include/pros/apix.h include/api.h \
- include/pros/adi.h include/pros/ai_vision.h include/pros/colors.h \
- include/pros/device.h include/pros/distance.h include/pros/error.h \
- include/pros/ext_adi.h include/pros/adi.h include/pros/adi.h \
- include/pros/gps.h include/pros/imu.h include/pros/link.h \
- include/pros/llemu.h include/liblvgl/llemu.h include/liblvgl/lvgl.h \
+bin/image.c.o: src/image.c include/liblvgl/lvgl.h \
  include/liblvgl/lv_version.h include/liblvgl/lvgl_private.h \
  include/liblvgl/core/lv_global.h \
  include/liblvgl/core/../lv_conf_internal.h \
@@ -648,27 +643,7 @@ bin/image.c.o: src/image.c include/pros/apix.h include/api.h \
  include/liblvgl/drivers/wayland/lv_wayland.h \
  include/liblvgl/drivers/wayland/../../display/lv_display.h \
  include/liblvgl/drivers/wayland/../../indev/lv_indev.h \
- include/liblvgl/lv_api_map_v9_0.h include/liblvgl/lv_api_map_v9_1.h \
- include/pros/misc.h include/pros/motors.h include/pros/optical.h \
- include/pros/error.h include/pros/rotation.h include/pros/rtos.h \
- include/pros/screen.h include/pros/colors.h include/pros/vision.h \
- include/pros/device.h include/pros/serial.h
-include/pros/apix.h:
-include/api.h:
-include/pros/adi.h:
-include/pros/ai_vision.h:
-include/pros/colors.h:
-include/pros/device.h:
-include/pros/distance.h:
-include/pros/error.h:
-include/pros/ext_adi.h:
-include/pros/adi.h:
-include/pros/adi.h:
-include/pros/gps.h:
-include/pros/imu.h:
-include/pros/link.h:
-include/pros/llemu.h:
-include/liblvgl/llemu.h:
+ include/liblvgl/lv_api_map_v9_0.h include/liblvgl/lv_api_map_v9_1.h
 include/liblvgl/lvgl.h:
 include/liblvgl/lv_version.h:
 include/liblvgl/lvgl_private.h:
@@ -1345,14 +1320,3 @@ include/liblvgl/drivers/wayland/../../display/lv_display.h:
 include/liblvgl/drivers/wayland/../../indev/lv_indev.h:
 include/liblvgl/lv_api_map_v9_0.h:
 include/liblvgl/lv_api_map_v9_1.h:
-include/pros/misc.h:
-include/pros/motors.h:
-include/pros/optical.h:
-include/pros/error.h:
-include/pros/rotation.h:
-include/pros/rtos.h:
-include/pros/screen.h:
-include/pros/colors.h:
-include/pros/vision.h:
-include/pros/device.h:
-include/pros/serial.h:

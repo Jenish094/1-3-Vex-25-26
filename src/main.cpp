@@ -7,10 +7,10 @@
 #define RightFront 20
 #define RightBack 11
 #define Green 8
-#define Blue 5
-#define Orange 15
-#define Yellow 6
-#define Purple 7
+#define Pink 5
+#define BluePurple 15
+#define Orange 6
+#define Yellow 7
 
 
 void displayimg() {
@@ -39,6 +39,7 @@ void initialize() {
        break;
    }
  }
+
 }
 
 /**
@@ -78,7 +79,7 @@ void autonRL() {
        pros::screen::print(pros::E_TEXT_MEDIUM, 3, "RL");
        pros::delay(1000);
     }
-}
+  }
 void autonRR(){
     while(1){
        pros::screen::print(pros::E_TEXT_MEDIUM, 3, "RR");
@@ -98,17 +99,17 @@ void autonBR(){
     }
 }
 void autonomous() {
-  if ((press_x < 238) && (press_y < 120)) { 
+  if ((press_x < 240) && (press_y < 120)) { 
     autonRL();
-  } else if ((press_x >= 238) && (press_y < 124)) {
+  } else if ((press_x >= 241) && (press_y < 120)) {
     autonRR();
-  } else if ((press_x < 242) && (press_y >= 120)) {
+  } else if ((press_x > 240) && (press_y >= 121)) {
     autonBL();
-  } else if ((press_x >= 242) && (press_y >= 124)) {
+  } else if ((press_x >= 241) && (press_y >= 121)) {
     autonBR();
   }
  delay (15);
-  displayimg();
+
 }
 
 /**
@@ -126,8 +127,7 @@ void autonomous() {
  */
 
 void opcontrol() {
-
-
+  displayimg();
 	Controller master(E_CONTROLLER_MASTER);  
 
   MotorGroup left_mg ({LeftFront, LeftBack});	
@@ -135,7 +135,7 @@ void opcontrol() {
 	// Intake orientation mapping per requirements (on forward command):
 	// Green reverse, Blue forward, Orange forward, Yellow reverse, Purple forward
 	// Use negative port numbers to reverse those motors in the group.
-	MotorGroup Intake({-Green, Blue, Orange, -Yellow, Purple});
+	MotorGroup Intake({-Green, Pink, BluePurple, -Yellow});
 
 
 	while (true) {
@@ -157,7 +157,8 @@ void opcontrol() {
 		delay(20);                               // Run for 20 ms then update
 	}
 	delay (15);
-	  displayimg();
+  displayimg();
+
 }
 
 
