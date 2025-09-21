@@ -592,7 +592,7 @@
       }
     },
     "upload_options": {
-      "icon": "alien",
+      "icon": "X",
       "slot": 2,
       "description": "Skills Code for Autonomous and Driver. PROS"
     },
