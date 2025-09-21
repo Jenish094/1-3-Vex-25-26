@@ -4,13 +4,13 @@
 
 #define LeftFront 10
 #define LeftBack 9
-#define RightFront 20
-#define RightBack 11
-#define Green 8
-#define Pink 5
-#define BluePurple 15
-#define Orange 6
-#define Yellow 7
+#define RightFront 7
+#define RightBack 20
+#define Green 5
+#define Pink 1
+#define BYO 12
+#define PinkUp 2
+#define Purple 13
 
 
 void displayimg() {
@@ -129,11 +129,13 @@ void autonomous() {
 void opcontrol() {
 	Controller master(E_CONTROLLER_MASTER);  
 
-  MotorGroup left_mg ({LeftFront, LeftBack});	
-	MotorGroup right_mg ({RightFront, RightBack});
-	// Intake orientation mapping per requirements (on forward command):
-	// Use negative port numbers to reverse those motors in the group.
-	MotorGroup Intake({-Green, Pink, BluePurple, -Yellow});
+	// Drivetrain with reversed motors: LeftBack, RightFront, RightBack are reversed
+	MotorGroup left_mg ({LeftFront, -LeftBack});	
+	MotorGroup right_mg ({-RightFront, -RightBack});
+	
+	// Intake motors: Green, Pink, BYO, PinkUp forward with R2, Purple reverse with R2
+	// So Purple needs to be negated since it should move opposite to the others
+	MotorGroup Intake({Green, Pink, BYO, PinkUp, -Purple});
 
 
 	while (true) {
@@ -144,15 +146,17 @@ void opcontrol() {
 		left_mg.move(dir - turn);                      // Sets left motor voltage
 		right_mg.move(dir + turn);                     // Sets right motor voltage
 
-		// Intake control: R1 forward, R2 reverse (others stop)
-		if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-			Intake.move(127);
-		} else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+		// Intake control: R2 forward (Green, Pink, BYO, PinkUp forward, Purple reverse)
+		// R1 reverse (Green, Pink, BYO, PinkUp reverse, Purple forward)
+		if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+			Intake.move(127);  // Green, Pink, BYO, PinkUp forward, Purple reverse
+		} else if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
 			Intake.move(-127);
+       // Green, Pink, BYO, PinkUp reverse, Purple forward
 		} else {
 			Intake.move(0);
 		}
-		delay(20);                               // Run for 20 ms then update
+		delay(20);  
 	}
 	delay (15);
   displayimg();
