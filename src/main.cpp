@@ -26,19 +26,19 @@ int press_x, press_y;
 
 void initialize() {
 
- pros::screen::set_pen(0xff0000);
- pros::screen::fill_rect(0, 0, 238, 120);
- pros::screen::fill_rect(0, 124, 238, 240);
- pros::screen::set_pen(0x0000ff);
- pros::screen::fill_rect(242, 0, 480, 120);
- pros::screen::fill_rect(242, 124, 480, 240);
- while (1) {
-   if (pros::screen::touch_status().touch_status == E_TOUCH_PRESSED) {
-       press_x = pros::screen::touch_status().x;
-       press_y = pros::screen::touch_status().y;
-       break;
-   }
- }
+//  pros::screen::set_pen(0xff0000);
+//  pros::screen::fill_rect(0, 0, 238, 120);
+//  pros::screen::fill_rect(0, 124, 238, 240);
+//  pros::screen::set_pen(0x0000ff);
+//  pros::screen::fill_rect(242, 0, 480, 120);
+//  pros::screen::fill_rect(242, 124, 480, 240);
+//  while (1) {
+//    if (pros::screen::touch_status().touch_status == E_TOUCH_PRESSED) {
+//        press_x = pros::screen::touch_status().x;
+//        press_y = pros::screen::touch_status().y;
+//        break;
+//    }
+//  }
 
 }
 
@@ -79,37 +79,122 @@ void autonRL() {
        pros::screen::print(pros::E_TEXT_MEDIUM, 3, "RL");
        pros::delay(1000);
     }
+    
   }
 void autonRR(){
     while(1){
        pros::screen::print(pros::E_TEXT_MEDIUM, 3, "RR");
        pros::delay(1000);
     }
+    pros::Motor left_front(-LeftFront);
+    pros::Motor left_back(-LeftBack);
+    pros::Motor right_front(RightFront);
+    pros::Motor right_back(RightBack);
+    MotorGroup Intake({Green, Pink, BYO, PinkUp, -Purple});
+    
+    left_front.move_relative(1200, 100);
+    left_back.move_relative(1200, 100);
+    right_front.move_relative(1200, 100);
+    right_back.move_relative(1200, 100);
+    pros::delay(2000);
+    
+    left_front.move_relative(-300, 100);
+    left_back.move_relative(-300, 100);
+    right_front.move_relative(300, 100);
+    right_back.move_relative(300, 100);
+    pros::delay(1000);
+    
+    left_front.move_relative(50, 100);
+    left_back.move_relative(50, 100);
+    right_front.move_relative(50, 100);
+    right_back.move_relative(50, 100);
+    pros::delay(500);
+    
+    Intake.move(-127);
+    pros::delay(1000);
+    Intake.move(0);
+    
 }
 void autonBL(){
     while(1){
        pros::screen::print(pros::E_TEXT_MEDIUM, 3, "BL");
        pros::delay(1000);
     }
+    pros::Motor left_front(LeftFront);
+    pros::Motor left_back(LeftBack);
+    pros::Motor right_front(-RightFront);
+    pros::Motor right_back(-RightBack);
+    MotorGroup Intake({Green, Pink, BYO, PinkUp, -Purple});
+    
+    left_front.move_relative(1200, 100);
+    left_back.move_relative(1200, 100);
+    right_front.move_relative(1200, 100);
+    right_back.move_relative(1200, 100);
+    pros::delay(2000);
+    
+    left_front.move_relative(-300, 100);
+    left_back.move_relative(-300, 100);
+    right_front.move_relative(300, 100);
+    right_back.move_relative(300, 100);
+    pros::delay(1000);
+    
+    left_front.move_relative(50, 100);
+    left_back.move_relative(50, 100);
+    right_front.move_relative(50, 100);
+    right_back.move_relative(50, 100);
+    pros::delay(500);
+    
+    Intake.move(-127);
+    pros::delay(1000);
+    Intake.move(0);
+    
 }
 void autonBR(){
     while(1){
        pros::screen::print(pros::E_TEXT_MEDIUM, 3, "BR");
        pros::delay(1000);
     }
+
+    
 }
 void autonomous() {
-  if ((press_x < 240) && (press_y < 120)) { 
-    autonRL();
-  } else if ((press_x >= 241) && (press_y < 120)) {
-    autonRR();
-  } else if ((press_x > 240) && (press_y >= 121)) {
-    autonBL();
-  } else if ((press_x >= 241) && (press_y >= 121)) {
-    autonBR();
-  }
- delay (15);
-
+//   if ((press_x < 240) && (press_y < 120)) { 
+//     autonRL();
+//   } else if ((press_x >= 241) && (press_y < 120)) {
+//     autonRR();
+//   } else if ((press_x > 240) && (press_y >= 121)) {
+//     autonBL();
+//   } else if ((press_x >= 241) && (press_y >= 121)) {
+//     autonBR();
+//   }
+//  delay (15);
+    pros::Motor left_front(LeftFront);
+    pros::Motor left_back(LeftBack);
+    pros::Motor right_front(-RightFront);
+    pros::Motor right_back(-RightBack);
+    MotorGroup Intake({Green, Pink, BYO, PinkUp, -Purple});
+    
+    left_front.move_relative(1200, 100);
+    left_back.move_relative(1200, 100);
+    right_front.move_relative(1200, 100);
+    right_back.move_relative(1200, 100);
+    pros::delay(2000);
+    
+    left_front.move_relative(-300, 100);
+    left_back.move_relative(-300, 100);
+    right_front.move_relative(300, 100);
+    right_back.move_relative(300, 100);
+    pros::delay(1000);
+    
+    left_front.move_relative(50, 100);
+    left_back.move_relative(50, 100);
+    right_front.move_relative(50, 100);
+    right_back.move_relative(50, 100);
+    pros::delay(500);
+    
+    Intake.move(-127);
+    pros::delay(1000);
+    Intake.move(0);
 }
 
 /**
@@ -130,7 +215,7 @@ void opcontrol() {
 	Controller master(E_CONTROLLER_MASTER);  
 
 	// Drivetrain with reversed motors: LeftBack, RightFront, RightBack are reversed
-	MotorGroup left_mg ({LeftFront, -LeftBack});	
+	MotorGroup left_mg ({-LeftFront, -LeftBack});	
 	MotorGroup right_mg ({-RightFront, -RightBack});
 	
 	// Intake motors: Green, Pink, BYO, PinkUp forward with R2, Purple reverse with R2
@@ -159,6 +244,4 @@ void opcontrol() {
 		delay(20);  
 	}
 	delay (15);
-  displayimg();
-
 }

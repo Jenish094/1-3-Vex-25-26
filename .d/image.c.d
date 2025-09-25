@@ -164,13 +164,13 @@ bin/image.c.o: src/image.c include/liblvgl/lvgl.h \
  include/liblvgl/core/../others/sysmon/../../others/observer/../../core/lv_obj_event.h \
  include/liblvgl/core/../others/sysmon/../../others/observer/../../core/../misc/lv_event.h \
  include/liblvgl/core/../others/sysmon/../../others/observer/../../core/../indev/lv_indev.h \
- c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/core/lv_group.h \
- c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/lv_conf_internal.h \
- c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_types.h \
- c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_ll.h \
- c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_area.h \
- c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_timer.h \
- c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_event.h \
+ I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/core/lv_group.h \
+ I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/lv_conf_internal.h \
+ I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_types.h \
+ I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_ll.h \
+ I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_area.h \
+ I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_timer.h \
+ I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_event.h \
  include/liblvgl/core/../others/sysmon/../../others/observer/../../core/lv_group.h \
  include/liblvgl/core/../stdlib/builtin/lv_tlsf.h \
  include/liblvgl/core/../stdlib/builtin/../../lv_conf_internal.h \
@@ -811,13 +811,13 @@ include/liblvgl/core/../others/sysmon/../../others/observer/../../core/lv_obj_pr
 include/liblvgl/core/../others/sysmon/../../others/observer/../../core/lv_obj_event.h:
 include/liblvgl/core/../others/sysmon/../../others/observer/../../core/../misc/lv_event.h:
 include/liblvgl/core/../others/sysmon/../../others/observer/../../core/../indev/lv_indev.h:
-c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/core/lv_group.h:
-c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/lv_conf_internal.h:
-c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_types.h:
-c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_ll.h:
-c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_area.h:
-c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_timer.h:
-c:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_event.h:
+I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/core/lv_group.h:
+I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/lv_conf_internal.h:
+I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_types.h:
+I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_ll.h:
+I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_area.h:
+I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_timer.h:
+I:/Users/jenis/Desktop/School/Vex/PushBack2526/PROScode/3Main2/include/liblvgl/misc/lv_event.h:
 include/liblvgl/core/../others/sysmon/../../others/observer/../../core/lv_group.h:
 include/liblvgl/core/../stdlib/builtin/lv_tlsf.h:
 include/liblvgl/core/../stdlib/builtin/../../lv_conf_internal.h:

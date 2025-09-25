@@ -4,20 +4,21 @@
       "name": "PROS Project",
       "includePath": [
         "${workspaceFolder}/**",
-        "c:\\Users\\jenis\\Desktop\\School\\Vex\\PushBack2526\\PROScode\\3Main2\\include"
+        "c:\\Users\\jenis\\Desktop\\School\\Vex\\PushBack2526\\PROScode\\3Main2\\include",
+        "i:\\Users\\jenis\\Desktop\\School\\Vex\\PushBack2526\\PROScode\\3Main2\\include"
       ],
       "defines": [
         "_DEBUG",
         "UNICODE",
         "_UNICODE"
       ],
-      "compilerPath": "C:\\Users\\jenis\\Desktop\\ENV\\PROSTOOLCHAIN\\usr\\bin\\arm-none-eabi-g++",
+      "compilerPath": "c:\\Users\\jenis\\AppData\\Roaming\\Code\\User\\globalStorage\\sigbots.pros\\install\\pros-toolchain-windows\\usr\\bin\\arm-none-eabi-g++",
       "cStandard": "gnu11",
       "cppStandard": "gnu++20",
       "intelliSenseMode": "gcc-arm",
       "browse": {
         "path": [
-          "c:\\Users\\jenis\\Desktop\\School\\Vex\\PushBack2526\\PROScode\\3Main2"
+          "i:\\Users\\jenis\\Desktop\\School\\Vex\\PushBack2526\\PROScode\\3Main2"
         ],
         "limitSymbolsToIncludedHeaders": true,
         "databaseFilename": ""
