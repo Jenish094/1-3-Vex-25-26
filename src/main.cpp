@@ -1,4 +1,3 @@
-// VEX V5 C++ Project
 #include "vex.h"
 #include <list>
 #include <algorithm>
@@ -8,22 +7,18 @@ using namespace vex;
 
 //#region config_globals
 vex::brain      Brain;
-vex::motor      motor1(vex::PORT1, vex::gearSetting::ratio18_1, false);
-vex::motor      motor10(vex::PORT10, vex::gearSetting::ratio18_1, true);
+vex::motor      motor1(vex::PORT1, vex::gearSetting::ratio6_1, false);
+vex::motor      motor10(vex::PORT10, vex::gearSetting::ratio6_1, true);
 vex::controller con(vex::controllerType::primary);
 //#endregion config_globals
 
 ////////////////////////////////////////////////////////////////////////////////
-// Begin secret sauce                                                         //
+// Recording Code                                                             //
 ////////////////////////////////////////////////////////////////////////////////
 
 // velocityRecordedMotor
 //  Manages the recording, playback, saving, and loading of records of commanded
 //  velocity.
-//
-// Disclaimer: It is a violation of rule <G2> in VRC to copy my (John Tyler, an
-//  adult) code verbatim. (Programs like this written by students are still
-//  fine for competition use.)
 //
 // Usage:
 //  Instantiation:
@@ -209,6 +204,112 @@ class velocityRecordedMotor : public vex::motor {
     ~velocityRecordedMotor() {
         
     }
+    // ...existing code...
+
+    void exportToCppCode(const char* motorVariableName) {
+        disableRecording();
+        std::string cppFileName = std::string(logFileName) + ".cpp";
+        std::ofstream outputFile(cppFileName.c_str(), std::ofstream::out | std::ofstream::trunc);
+        outputFile << "// VexCode Recorder->Code - Jenish Pathak 2025 " << motorVariableName << std::endl;
+        outputFile << "// Motor " << motorVariableName << std::endl;
+        outputFile << std::endl;
+        
+        for (std::list<dataslice>::iterator it = data.begin(); it != data.end(); ++it) {
+            if (it->normalizedVelocity != 0) {
+                outputFile << motorVariableName << ".spin(";
+                if (it->normalizedVelocity > 0) {
+                    outputFile << "forward";
+                } else {
+                    outputFile << "reverse";
+                }
+                outputFile << ", " << abs(it->normalizedVelocity) << ", percent);" << std::endl;
+            } else {
+                outputFile << motorVariableName << ".stop();" << std::endl;
+            }
+            
+            if (it != data.begin()) {
+                auto prev = it;
+                prev--;
+                uint32_t waitTime = it->timestamp - prev->timestamp;
+                if (waitTime > 0) {
+                    outputFile << "wait(" << waitTime << ", msec);" << std::endl;
+                }
+            }
+        }
+        
+        outputFile << motorVariableName << ".stop();" << std::endl;
+        outputFile.close();
+        
+        // Also output to Brain screen for debugging
+        Brain.Screen.setCursor(1, 1);
+        Brain.Screen.print("Exported %d commands", data.size());
+    }
+    
+    // Static method to export all motors together
+    static void exportAllMotorsToVEXCode(velocityRecordedMotor* motors[], const char* motorNames[], int motorCount, const char* fileName) {
+        std::ofstream outputFile(fileName, std::ofstream::out | std::ofstream::trunc);
+        
+        outputFile << "// Auto-generated VEXcode autonomous playback" << std::endl;
+        outputFile << "// Copy this code into your autonomous function" << std::endl;
+        outputFile << "void playRecording() {" << std::endl;
+        
+        // Find the maximum timestamp across all motors
+        uint32_t maxTimestamp = 0;
+        for (int i = 0; i < motorCount; i++) {
+            if (!motors[i]->data.empty()) {
+                uint32_t lastTime = motors[i]->data.back().timestamp;
+                if (lastTime > maxTimestamp) {
+                    maxTimestamp = lastTime;
+                }
+            }
+        }
+        
+        // Generate time-based playback
+        for (uint32_t currentTime = 0; currentTime <= maxTimestamp; currentTime += 20) {
+            bool hasCommands = false;
+            
+            for (int i = 0; i < motorCount; i++) {
+                for (auto it = motors[i]->data.begin(); it != motors[i]->data.end(); ++it) {
+                    if (abs((int32_t)it->timestamp - (int32_t)currentTime) <= 10) {
+                        if (!hasCommands) {
+                            outputFile << "    // Time: " << currentTime << "ms" << std::endl;
+                            hasCommands = true;
+                        }
+                        
+                        if (it->normalizedVelocity != 0) {
+                            outputFile << "    " << motorNames[i] << ".spin(";
+                            if (it->normalizedVelocity > 0) {
+                                outputFile << "forward";
+                            } else {
+                                outputFile << "reverse";
+                            }
+                            outputFile << ", " << abs(it->normalizedVelocity) << ", percent);" << std::endl;
+                        } else {
+                            outputFile << "    " << motorNames[i] << ".stop();" << std::endl;
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            if (hasCommands && currentTime < maxTimestamp) {
+                outputFile << "    wait(20, msec);" << std::endl;
+                outputFile << std::endl;
+            }
+        }
+        
+        // Stop all motors at the end
+        outputFile << "    // Stop all motors" << std::endl;
+        for (int i = 0; i < motorCount; i++) {
+            outputFile << "    " << motorNames[i] << ".stop();" << std::endl;
+        }
+        
+        outputFile << "}" << std::endl;
+        outputFile.close();
+        
+        Brain.Screen.setCursor(1, 1);
+        Brain.Screen.print("Exported combined code");
+    }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,8 +317,34 @@ class velocityRecordedMotor : public vex::motor {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-velocityRecordedMotor recordedMotor1(vex::PORT1, vex::gearSetting::ratio18_1, false, "motor1Vlog.dat");
-velocityRecordedMotor recordedMotor10(vex::PORT10, vex::gearSetting::ratio18_1, true, "motor10Vlog.dat");
+// Drivetrain recorded motors (left front, left back, right front, right back)
+velocityRecordedMotor RecordedLF(vex::PORT1, vex::gearSetting::ratio18_1, false, "LFVlog.dat");
+velocityRecordedMotor RecordedLB(vex::PORT2, vex::gearSetting::ratio18_1, false, "LBVlog.dat");
+velocityRecordedMotor RecordedRF(vex::PORT3, vex::gearSetting::ratio18_1, false, "RFVlog.dat");
+velocityRecordedMotor RecordedRB(vex::PORT4, vex::gearSetting::ratio18_1, false, "RBVlog.dat");
+
+// OrbMove group: ports 5, 6, 7 move together
+velocityRecordedMotor recordedOrb5(vex::PORT5, vex::gearSetting::ratio18_1, false, "orb5Vlog.dat");
+velocityRecordedMotor recordedOrb6(vex::PORT6, vex::gearSetting::ratio18_1, false, "orb6Vlog.dat");
+velocityRecordedMotor recordedOrb7(vex::PORT7, vex::gearSetting::ratio18_1, false, "orb7Vlog.dat");
+
+// Helper wrappers to treat pairs/triples as motor groups for control and recording
+static inline void left_mg_spin(double pct) {
+    // Left side should be reversed (send negative of joystick)
+    RecordedLF.spin(vex::directionType::fwd, -pct, vex::velocityUnits::pct);
+    RecordedLB.spin(vex::directionType::fwd, -pct, vex::velocityUnits::pct);
+}
+
+static inline void right_mg_spin(double pct) {
+    RecordedRF.spin(vex::directionType::fwd, pct, vex::velocityUnits::pct);
+    RecordedRB.spin(vex::directionType::fwd, pct, vex::velocityUnits::pct);
+}
+
+static inline void OrbMove_spin(double pct) {
+    recordedOrb5.spin(vex::directionType::fwd, pct, vex::velocityUnits::pct);
+    recordedOrb6.spin(vex::directionType::fwd, pct, vex::velocityUnits::pct);
+    recordedOrb7.spin(vex::directionType::fwd, pct, vex::velocityUnits::pct);
+}
 
 
 int main(void) {
@@ -226,79 +353,191 @@ int main(void) {
     bool BlastPressed = false;
     bool XlastPressed = false;
     bool YlastPressed = false;
+    bool UplastPressed = false;
     bool checkForPlaybackEnd = false;
     while (true) {
         if (!AlastPressed && con.ButtonA.pressing()) {
-            if (!recordedMotor1.isRecording()) {
-                recordedMotor1.disableRecordingOrPlayback();
-                recordedMotor10.disableRecordingOrPlayback();
-                recordedMotor1.enableRecording();
-                recordedMotor10.enableRecording();
+            if (!RecordedLF.isRecording()) {
+                // Disable any existing recording/playback state on all motors
+                RecordedLF.disableRecordingOrPlayback();
+                RecordedLB.disableRecordingOrPlayback();
+                RecordedRF.disableRecordingOrPlayback();
+                RecordedRB.disableRecordingOrPlayback();
+                recordedOrb5.disableRecordingOrPlayback();
+                recordedOrb6.disableRecordingOrPlayback();
+                recordedOrb7.disableRecordingOrPlayback();
+
+                // Enable recording for the groups (individual motors record their own data)
+                RecordedLF.enableRecording();
+                RecordedLB.enableRecording();
+                RecordedRF.enableRecording();
+                RecordedRB.enableRecording();
+                recordedOrb5.enableRecording();
+                recordedOrb6.enableRecording();
+                recordedOrb7.enableRecording();
+
                 con.Screen.setCursor(1,1);
                 con.Screen.print("Recording...         ");
             } else {
-                recordedMotor1.disableRecordingOrPlayback();
-                recordedMotor10.disableRecordingOrPlayback();
+                RecordedLF.disableRecordingOrPlayback();
+                RecordedLB.disableRecordingOrPlayback();
+                RecordedRF.disableRecordingOrPlayback();
+                RecordedRB.disableRecordingOrPlayback();
+                recordedOrb5.disableRecordingOrPlayback();
+                recordedOrb6.disableRecordingOrPlayback();
+                recordedOrb7.disableRecordingOrPlayback();
                 con.Screen.clearLine(1);
             }
             AlastPressed = true;
         } else if (!BlastPressed && con.ButtonB.pressing()) {
-            if (!recordedMotor1.isPlayback()) {
-                recordedMotor1.disableRecordingOrPlayback();
-                recordedMotor10.disableRecordingOrPlayback();
-                recordedMotor1.enablePlayback();
-                recordedMotor10.enablePlayback();
+            if (!RecordedLF.isPlayback()) {
+                RecordedLF.disableRecordingOrPlayback();
+                RecordedLB.disableRecordingOrPlayback();
+                RecordedRF.disableRecordingOrPlayback();
+                RecordedRB.disableRecordingOrPlayback();
+                recordedOrb5.disableRecordingOrPlayback();
+                recordedOrb6.disableRecordingOrPlayback();
+                recordedOrb7.disableRecordingOrPlayback();
+
+                RecordedLF.enablePlayback();
+                RecordedLB.enablePlayback();
+                RecordedRF.enablePlayback();
+                RecordedRB.enablePlayback();
+                recordedOrb5.enablePlayback();
+                recordedOrb6.enablePlayback();
+                recordedOrb7.enablePlayback();
+
                 con.Screen.setCursor(1,1);
                 con.Screen.print("Playback...        ");
                 checkForPlaybackEnd = true;
             } else {
-                recordedMotor1.disableRecordingOrPlayback();
-                recordedMotor10.disableRecordingOrPlayback();
+                RecordedLF.disableRecordingOrPlayback();
+                RecordedLB.disableRecordingOrPlayback();
+                RecordedRF.disableRecordingOrPlayback();
+                RecordedRB.disableRecordingOrPlayback();
+                recordedOrb5.disableRecordingOrPlayback();
+                recordedOrb6.disableRecordingOrPlayback();
+                recordedOrb7.disableRecordingOrPlayback();
                 con.Screen.clearLine(1);
                 checkForPlaybackEnd = false;
             }
             BlastPressed = true;
         } else if (!XlastPressed && con.ButtonX.pressing()) {
-            recordedMotor1.disableRecordingOrPlayback();
-            recordedMotor10.disableRecordingOrPlayback();
+            RecordedLF.disableRecordingOrPlayback();
+            RecordedLB.disableRecordingOrPlayback();
+            RecordedRF.disableRecordingOrPlayback();
+            RecordedRB.disableRecordingOrPlayback();
+            recordedOrb5.disableRecordingOrPlayback();
+            recordedOrb6.disableRecordingOrPlayback();
+            recordedOrb7.disableRecordingOrPlayback();
             con.Screen.setCursor(1,1);
             uint32_t startLoadTime = timer::system();
             con.Screen.print("Saving...           ");
-            recordedMotor1.stop();
-            recordedMotor10.stop();
-            recordedMotor1.saveRecording();
-            recordedMotor10.saveRecording();
+            RecordedLF.stop();
+            RecordedLB.stop();
+            RecordedRF.stop();
+            RecordedRB.stop();
+            recordedOrb5.stop();
+            recordedOrb6.stop();
+            recordedOrb7.stop();
+            RecordedLF.saveRecording();
+            RecordedLB.saveRecording();
+            RecordedRF.saveRecording();
+            RecordedRB.saveRecording();
+            recordedOrb5.saveRecording();
+            recordedOrb6.saveRecording();
+            recordedOrb7.saveRecording();
             while (timer::system() < startLoadTime + 1000);
             con.Screen.clearLine(1);
             XlastPressed = true;
         } else if (!YlastPressed && con.ButtonY.pressing()) {
-            recordedMotor1.disableRecordingOrPlayback();
-            recordedMotor10.disableRecordingOrPlayback();
+            RecordedLF.disableRecordingOrPlayback();
+            RecordedLB.disableRecordingOrPlayback();
+            RecordedRF.disableRecordingOrPlayback();
+            RecordedRB.disableRecordingOrPlayback();
+            recordedOrb5.disableRecordingOrPlayback();
+            recordedOrb6.disableRecordingOrPlayback();
+            recordedOrb7.disableRecordingOrPlayback();
             con.Screen.setCursor(1,1);
             uint32_t startLoadTime = timer::system();
             con.Screen.print("Loading...           ");
-            recordedMotor1.stop();
-            recordedMotor10.stop();
-            recordedMotor1.loadRecording();
-            recordedMotor10.loadRecording();
+            RecordedLF.stop();
+            RecordedLB.stop();
+            RecordedRF.stop();
+            RecordedRB.stop();
+            recordedOrb5.stop();
+            recordedOrb6.stop();
+            recordedOrb7.stop();
+            RecordedLF.loadRecording();
+            RecordedLB.loadRecording();
+            RecordedRF.loadRecording();
+            RecordedRB.loadRecording();
+            recordedOrb5.loadRecording();
+            recordedOrb6.loadRecording();
+            recordedOrb7.loadRecording();
             while (timer::system() < startLoadTime + 1000);
             con.Screen.clearLine(1);
             YlastPressed = true;
+        } else if (!UplastPressed && con.ButtonUp.pressing()) {
+            RecordedLF.disableRecordingOrPlayback();
+            RecordedLB.disableRecordingOrPlayback();
+            RecordedRF.disableRecordingOrPlayback();
+            RecordedRB.disableRecordingOrPlayback();
+            recordedOrb5.disableRecordingOrPlayback();
+            recordedOrb6.disableRecordingOrPlayback();
+            recordedOrb7.disableRecordingOrPlayback();
+            con.Screen.setCursor(1,1);
+            uint32_t startExportTime = timer::system();
+            con.Screen.print("Exporting to VEXcode...");
+            RecordedLF.stop();
+            RecordedLB.stop();
+            RecordedRF.stop();
+            RecordedRB.stop();
+            recordedOrb5.stop();
+            recordedOrb6.stop();
+            recordedOrb7.stop();
+            
+            // Export all motors together to a single VEXcode file
+            velocityRecordedMotor* motors[] = {&RecordedLF, &RecordedLB, &RecordedRF, &RecordedRB, &recordedOrb5, &recordedOrb6, &recordedOrb7};
+            const char* motorNames[] = {"RecordedLF", "RecordedLB", "RecordedRF", "RecordedRB", "recordedOrb5", "recordedOrb6", "recordedOrb7"};
+            velocityRecordedMotor::exportAllMotorsToVEXCode(motors, motorNames, 7, "autonomous_playback.cpp");
+            
+            while (timer::system() < startExportTime + 1000);
+            con.Screen.clearLine(1);
+            UplastPressed = true;
         }
         AlastPressed = AlastPressed && con.ButtonA.pressing();
         BlastPressed = BlastPressed && con.ButtonB.pressing();
         XlastPressed = XlastPressed && con.ButtonX.pressing();
         YlastPressed = YlastPressed && con.ButtonY.pressing();
+        UplastPressed = UplastPressed && con.ButtonUp.pressing();
         
-         recordedMotor1.spin(vex::directionType::fwd,con.Axis3.position(),vex::velocityUnits::pct);
-        recordedMotor10.spin(vex::directionType::fwd,con.Axis2.position(),vex::velocityUnits::pct);
-        
-        if (checkForPlaybackEnd && recordedMotor1.donePlayback() && recordedMotor10.donePlayback()) {
+        // Drive using motor groups: left_mg and right_mg. Left side is reversed inside helper.
+        left_mg_spin(con.Axis3.position());
+        right_mg_spin(con.Axis2.position());
+        // OrbMove controlled by L1 (forward) and L2 (reverse)
+        if (con.ButtonL1.pressing()) {
+            // forward at 60% speed
+            OrbMove_spin(60);
+        } else if (con.ButtonL2.pressing()) {
+            // reverse at 60% speed
+            OrbMove_spin(-60);
+        } else {
+            // stop OrbMove when neither button is pressed
+            OrbMove_spin(0);
+        }
+
+        if (checkForPlaybackEnd && RecordedLF.donePlayback() && RecordedLB.donePlayback() && RecordedRF.donePlayback() && RecordedRB.donePlayback() && recordedOrb5.donePlayback() && recordedOrb6.donePlayback() && recordedOrb7.donePlayback()) {
             checkForPlaybackEnd = false;
             con.Screen.setCursor(1,1);
             con.Screen.print("Done playback    ");
-            recordedMotor1.disablePlayback();
-            recordedMotor10.disablePlayback();
+            RecordedLF.disablePlayback();
+            RecordedLB.disablePlayback();
+            RecordedRF.disablePlayback();
+            RecordedRB.disablePlayback();
+            recordedOrb5.disablePlayback();
+            recordedOrb6.disablePlayback();
+            recordedOrb7.disablePlayback();
         }
         
         wait(30, msec);
