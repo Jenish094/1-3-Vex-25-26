@@ -317,20 +317,20 @@ class velocityRecordedMotor : public vex::motor {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// Drivetrain recorded motors (left front, left back, right front, right back)
-velocityRecordedMotor RecordedLF(vex::PORT1, vex::gearSetting::ratio18_1, false, "LFVlog.dat");
-velocityRecordedMotor RecordedLB(vex::PORT2, vex::gearSetting::ratio18_1, false, "LBVlog.dat");
-velocityRecordedMotor RecordedRF(vex::PORT3, vex::gearSetting::ratio18_1, false, "RFVlog.dat");
-velocityRecordedMotor RecordedRB(vex::PORT4, vex::gearSetting::ratio18_1, false, "RBVlog.dat");
+// DT motors
+velocityRecordedMotor RecordedLF(vex::PORT1, vex::gearSetting::ratio6_1, false, "LFVlog.dat");
+velocityRecordedMotor RecordedLB(vex::PORT2, vex::gearSetting::ratio6_1, false, "LBVlog.dat");
+velocityRecordedMotor RecordedRF(vex::PORT3, vex::gearSetting::ratio6_1, false, "RFVlog.dat");
+velocityRecordedMotor RecordedRB(vex::PORT4, vex::gearSetting::ratio6_1, false, "RBVlog.dat");
 
-// OrbMove group: ports 5, 6, 7 move together
+// OrbMover motors
 velocityRecordedMotor recordedOrb5(vex::PORT5, vex::gearSetting::ratio18_1, false, "orb5Vlog.dat");
 velocityRecordedMotor recordedOrb6(vex::PORT6, vex::gearSetting::ratio18_1, false, "orb6Vlog.dat");
 velocityRecordedMotor recordedOrb7(vex::PORT7, vex::gearSetting::ratio18_1, false, "orb7Vlog.dat");
 
-// Helper wrappers to treat pairs/triples as motor groups for control and recording
+// helper wrappers to treat pairs/triples as motor groups for control and recording
 static inline void left_mg_spin(double pct) {
-    // Left side should be reversed (send negative of joystick)
+    // left side reversed
     RecordedLF.spin(vex::directionType::fwd, -pct, vex::velocityUnits::pct);
     RecordedLB.spin(vex::directionType::fwd, -pct, vex::velocityUnits::pct);
 }
@@ -348,7 +348,6 @@ static inline void OrbMove_spin(double pct) {
 
 
 int main(void) {
-    // Start here
     bool AlastPressed = false;
     bool BlastPressed = false;
     bool XlastPressed = false;
@@ -358,7 +357,7 @@ int main(void) {
     while (true) {
         if (!AlastPressed && con.ButtonA.pressing()) {
             if (!RecordedLF.isRecording()) {
-                // Disable any existing recording/playback state on all motors
+                // disable existing recordings
                 RecordedLF.disableRecordingOrPlayback();
                 RecordedLB.disableRecordingOrPlayback();
                 RecordedRF.disableRecordingOrPlayback();
@@ -367,7 +366,7 @@ int main(void) {
                 recordedOrb6.disableRecordingOrPlayback();
                 recordedOrb7.disableRecordingOrPlayback();
 
-                // Enable recording for the groups (individual motors record their own data)
+                //enable recording
                 RecordedLF.enableRecording();
                 RecordedLB.enableRecording();
                 RecordedRF.enableRecording();
@@ -497,7 +496,7 @@ int main(void) {
             recordedOrb6.stop();
             recordedOrb7.stop();
             
-            // Export all motors together to a single VEXcode file
+            // export all to same file
             velocityRecordedMotor* motors[] = {&RecordedLF, &RecordedLB, &RecordedRF, &RecordedRB, &recordedOrb5, &recordedOrb6, &recordedOrb7};
             const char* motorNames[] = {"RecordedLF", "RecordedLB", "RecordedRF", "RecordedRB", "recordedOrb5", "recordedOrb6", "recordedOrb7"};
             velocityRecordedMotor::exportAllMotorsToVEXCode(motors, motorNames, 7, "autonomous_playback.cpp");
@@ -512,18 +511,14 @@ int main(void) {
         YlastPressed = YlastPressed && con.ButtonY.pressing();
         UplastPressed = UplastPressed && con.ButtonUp.pressing();
         
-        // Drive using motor groups: left_mg and right_mg. Left side is reversed inside helper.
         left_mg_spin(con.Axis3.position());
         right_mg_spin(con.Axis2.position());
-        // OrbMove controlled by L1 (forward) and L2 (reverse)
+        // L1 forward L2 Rev
         if (con.ButtonL1.pressing()) {
-            // forward at 60% speed
             OrbMove_spin(60);
         } else if (con.ButtonL2.pressing()) {
-            // reverse at 60% speed
             OrbMove_spin(-60);
         } else {
-            // stop OrbMove when neither button is pressed
             OrbMove_spin(0);
         }
 
